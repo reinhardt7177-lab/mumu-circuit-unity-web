@@ -1,133 +1,65 @@
-<!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | MUMU CIRCUIT</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">MUMU CIRCUIT</div>
-      </div>
-    </div>
-    <script>
-      var canvas = document.querySelector("#unity-canvas");
-
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
-        var warningBanner = document.querySelector("#unity-warning");
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
-      }
-
-      var buildUrl = "Build/v47";
-      var loaderUrl = buildUrl + "/CoastalWorldWebPages.loader.js";
-      var config = {
-        arguments: [],
-        dataUrl: buildUrl + "/CoastalWorldWebPages.data.unityweb",
-        frameworkUrl: buildUrl + "/CoastalWorldWebPages.framework.js.unityweb",
-        codeUrl: buildUrl + "/CoastalWorldWebPages.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "Mumu",
-        productName: "MUMU CIRCUIT",
-        productVersion: "0.1.0",
-        showBanner: unityShowBanner,
-        // errorHandler: function(err, url, line) {
-        //    alert("error " + err + " occurred at line " + line);
-        //    // Return 'true' if you handled this error and don't want Unity
-        //    // to process it further, 'false' otherwise.
-        //    return true;
-        // },
-      };
-
-      // By default, Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
-      // If you would like all file writes inside Unity Application.persistentDataPath
-      // directory to automatically persist so that the contents are remembered when
-      // the user revisits the site the next time, uncomment the following line:
-      // config.autoSyncPersistentDataPath = true;
-      // This autosyncing is currently not the default behavior to avoid regressing
-      // existing user projects that might rely on the earlier manual
-      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
-      // expected to change.
-
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        document.querySelector("#unity-container").className = "unity-mobile";
-        canvas.className = "unity-mobile";
-
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
-
-      } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
-      }
-
-      document.querySelector("#unity-loading-bar").style.display = "block";
-
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
-
-              }).catch((message) => {
-                alert(message);
-              });
-            };
-
-      document.body.appendChild(script);
-
-    </script>
-  </body>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101820">
+  <title>MUMU CIRCUIT · Midnight / Signal</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101820;color:#f2f6fa;font-family:"Malgun Gothic",system-ui,sans-serif}
+    #shell{position:relative;width:100%;height:100%;background:#101820}
+    #unity-canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
+    #loading{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:radial-gradient(ellipse at 65% 30%,#213743,#101820 60%);z-index:4;padding:32px}
+    .eyebrow{font-size:12px;letter-spacing:4px;color:#55e6c1}.wordmark{font-style:italic;font-size:clamp(32px,6vw,68px);font-weight:900;letter-spacing:-2px;margin:18px 0 8px}
+    .sub{font-size:13px;color:#a5b4c3;letter-spacing:2px}.track{width:min(360px,75vw);height:3px;background:#2a3b47;margin-top:40px}#progress{height:100%;background:#55e6c1;width:0;transition:width .2s}
+    #status{font-size:13px;color:#a5b4c3;margin-top:14px}#hint{font-size:12px;color:#a5b4c3;margin-top:36px;text-align:center;line-height:1.9}
+    #fullscreen{position:absolute;right:12px;bottom:10px;z-index:2;border:1px solid #637d8d66;border-radius:3px;background:#101820cc;color:#a5b4c3;font:11px system-ui;padding:5px 8px;cursor:pointer}
+    #fullscreen:hover,#fullscreen:focus-visible{color:#55e6c1;border-color:#55e6c1}
+    #banner{display:none;position:absolute;top:16px;left:50%;transform:translateX(-50%);max-width:90%;padding:16px;background:#192632;color:#f2f6fa;z-index:6;border-left:3px solid #ff6185}
+    @media (orientation:portrait){#hint:after{content:"\A휴대폰은 가로 화면을 권장합니다";white-space:pre;color:#55e6c1}}
+  </style>
+</head>
+<body>
+<main id="shell">
+  <canvas id="unity-canvas" tabindex="0" aria-label="MUMU CIRCUIT 레이싱 게임"></canvas>
+  <section id="loading" aria-live="polite">
+    <div class="eyebrow">COASTAL ARCADE DRIVING</div>
+    <div class="wordmark">MUMU CIRCUIT</div>
+    <div class="sub">MIDNIGHT / SIGNAL</div>
+    <div class="track"><div id="progress"></div></div>
+    <div id="status">해안 드라이브를 준비하고 있습니다 · 0%</div>
+    <div id="hint">W A S D 운전 · SHIFT 드리프트 · ESC 메뉴<br>첫 실행은 게임 파일 다운로드에 시간이 걸립니다</div>
+  </section>
+  <div id="banner" role="alert"></div>
+  <button id="fullscreen" type="button" aria-label="전체 화면 전환">전체 화면 ⛶</button>
+</main>
+<script>
+  var buildUrl = "Build/v48";
+  const canvas = document.getElementById('unity-canvas');
+  const banner = document.getElementById('banner');
+  function showBanner(message,type){
+    if(type==='error'){banner.textContent=message;banner.style.display='block';}
+    else console.warn(message);
+  }
+  const config = {
+    dataUrl: buildUrl + '/CoastalWorldWebPages.data.unityweb',
+    frameworkUrl: buildUrl + '/CoastalWorldWebPages.framework.js.unityweb',
+    codeUrl: buildUrl + '/CoastalWorldWebPages.wasm.unityweb',
+    streamingAssetsUrl: 'StreamingAssets',
+    companyName: 'Mumu',productName: 'MUMU CIRCUIT',productVersion: '0.1.0',
+    showBanner,devicePixelRatio:Math.min(window.devicePixelRatio||1,1.5),autoSyncPersistentDataPath:true
+  };
+  const script=document.createElement('script');script.src=buildUrl+'/CoastalWorldWebPages.loader.js';
+  script.onload=()=>createUnityInstance(canvas,config,p=>{
+    document.getElementById('progress').style.width=Math.round(p*100)+'%';
+    document.getElementById('status').textContent='해안 드라이브를 준비하고 있습니다 · '+Math.round(p*100)+'%';
+  }).then(instance=>{
+    document.getElementById('loading').hidden=true;document.getElementById('loading').style.display='none';
+    document.getElementById('fullscreen').onclick=()=>instance.SetFullscreen(1);
+    canvas.focus();
+  }).catch(message=>showBanner(message,'error'));
+  script.onerror=()=>showBanner('게임 파일을 불러오지 못했습니다. 새로고침해 주세요.','error');
+  document.body.appendChild(script);
+</script>
+</body>
 </html>
